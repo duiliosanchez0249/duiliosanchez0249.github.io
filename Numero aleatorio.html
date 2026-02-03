@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Adivina el Número</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f4f4f4;
+        padding-top: 40px;
+    }
+    .game-box {
+        background: white;
+        padding: 20px;
+        width: 350px;
+        margin: auto;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    input {
+        padding: 8px;
+        width: 80px;
+        font-size: 16px;
+    }
+    button {
+        padding: 8px 15px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+    .message {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="game-box">
+    <h2>🎯 Adivina el Número</h2>
+    <p>Estoy pensando en un número entre 1 y 100</p>
+    <p>Tienes <span id="attemptsLeft">10</span> intentos</p>
+
+    <input type="number" id="guessInput" placeholder="Número">
+    <br>
+    <button onclick="checkGuess()">Adivinar</button>
+
+    <p class="message" id="message"></p>
+    <p>Números probados: <span id="previousGuesses">Ninguno</span></p>
+
+    <button onclick="resetGame()" style="display:none;" id="resetBtn">🔄 Volver a jugar</button>
+</div>
+
+<script>
+let randomNumber = Math.floor(Math.random() * 100) + 1;
+let attempts = 10;
+let guesses = [];
+
+function checkGuess() {
+    const input = document.getElementById("guessInput");
+    let guess = Number(input.value);
+
+    if (!guess || guess < 1 || guess > 100) {
+        document.getElementById("message").textContent = "⚠ Ingresa un número válido entre 1 y 100";
+        return;
+    }
+
+    if (attempts <= 0) return;
+
+    guesses.push(guess);
+    attempts--;
+
+    document.getElementById("previousGuesses").textContent = guesses.join(", ");
+    document.getElementById("attemptsLeft").textContent = attempts;
+
+    if (guess === randomNumber) {
+        document.getElementById("message").textContent = "🎉 ¡Correcto! Adivinaste el número";
+        endGame();
+    } 
+    else if (attempts === 0) {
+        document.getElementById("message").textContent = `❌ Perdiste. El número era ${randomNumber}`;
+        endGame();
+    } 
+    else if (guess < randomNumber) {
+        document.getElementById("message").textContent = "📉 Te quedaste corto";
+    } 
+    else {
+        document.getElementById("message").textContent = "📈 Te pasaste";
+    }
+
+    input.value = "";
+    input.focus();
+}
+
+function endGame() {
+    document.getElementById("guessInput").disabled = true;
+    document.getElementById("resetBtn").style.display = "inline-block";
+}
+
+function resetGame() {
+    randomNumber = Math.floor(Math.random() * 100) + 1;
+    attempts = 10;
+    guesses = [];
+
+    document.getElementById("message").textContent = "";
+    document.getElementById("previousGuesses").textContent = "Ninguno";
+    document.getElementById("attemptsLeft").textContent = attempts;
+    document.getElementById("guessInput").disabled = false;
+    document.getElementById("guessInput").value = "";
+    document.getElementById("resetBtn").style.display = "none";
+}
+</script>
+
+</body>
+</html>
